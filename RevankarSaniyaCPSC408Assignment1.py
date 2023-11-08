@@ -232,8 +232,7 @@ while menu_option != 6:
         print("Update students")
 
         # Update
-        existing_student = False
-        while existing_student == False:
+        while True:
             new_first_name = input("Enter student's first name: ")
             new_last_name = input("Enter student's last name: ")
 
@@ -242,39 +241,45 @@ while menu_option != 6:
 
             existing_student = mycursor.fetchone()
 
-        if existing_student:
-            while True:
-                try:
-                    new_major = input("Enter the new major :")
-                except ValueError:
-                    print ("Error, Re-enter value.")
-                    continue
-                else:
-                    break
+            if existing_student:
+                break  # Exit the loop if the student exists
+            else:
+                print("Student not found. Please try again.")
 
-        if existing_student:
-            while True:
-                try:
-                    new_advisor = input("Enter the new advisor :")
-                except ValueError:
-                    print("Error, Re-enter value.")
-                    continue
-                else:
-                    break
+        # Now that the student exists, get the new information
+        while True:
+            try:
+                new_major = input("Enter the new major: ")
+            except ValueError:
+                print("Error, Re-enter value.")
+                continue
+            else:
+                break
 
-        if existing_student:
-            while True:
-                try:
-                    new_mobile = input("Enter the new Mobile Phone Number :")
-                except ValueError:
-                    print("Error, Re-enter value.")
-                    continue
-                else:
-                    break
+        while True:
+            try:
+                new_advisor = input("Enter the new advisor: ")
+            except ValueError:
+                print("Error, Re-enter value.")
+                continue
+            else:
+                break
 
-        mycursor.execute('UPDATE Students SET Major=?, Advisor=?, MobilePhoneNumber =? WHERE FirstName =?, AND LastName =?',
+        while True:
+            try:
+                new_mobile = input("Enter the new Mobile Phone Number: ")
+            except ValueError:
+                print("Error, Re-enter value.")
+                continue
+            else:
+                break
+
+        # Update the database with the new information
+        mycursor.execute('UPDATE Student SET Major=?, Advisor=?, MobilePhoneNumber=? WHERE FirstName=? AND LastName=?',
                          (new_major, new_advisor, new_mobile, new_first_name, new_last_name))
         conn.commit()
+
+        print("Student information updated successfully.")
 
 
         print("Would you like to continue? Answer Y or N")
@@ -304,8 +309,12 @@ while menu_option != 6:
 
         # Soft delete on students -> set isDeleted to true
         # Update the isDeleted from false to true
+        print ("Which student would you like to delete? Enter the student ID")
+        student_option = input("Enter your value: ")
+        student_option = int(student_option)
 
-        mycursor.execute('UPDATE Students SET isDeleted =? WHERE StudentID=?', ("true", StudentID))
+        mycursor.execute('UPDATE Student SET isDeleted =? WHERE StudentID=?', ("1", student_option))
+        print("Student is deleted.")
         conn.commit()
 
         print("Would you like to continue? Answer Y or N")
